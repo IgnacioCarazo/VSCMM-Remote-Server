@@ -1,4 +1,6 @@
 #include "thread.h"
+#include <typeinfo>
+#include <iostream>
 
 Thread::Thread(int ID, QObject *parent)
     :QThread(parent)
@@ -25,8 +27,16 @@ void Thread::run(){
 void Thread::readyRead(){
 
     QByteArray data = socket->readAll();
+    data.constData();
+    qDebug() << "se ha recibido" << data;
+    if (data == "5f4dcc3b5aa765d61d8327deb882cf99") {
+        qDebug() << "Password aceptado";
+        socket->write("Password correcto");
+    } else {
+        qDebug() << "Password equivocado";
+        disconnected();
+    }
 
-    socket->write(data);
 }
 
 void Thread::disconnected(){
